@@ -1,202 +1,212 @@
-# Hi, I'm Camilo 👋
+# Multi-Tenant Webhook API
 
-I'm an aspiring **Linux / Systems Administration / Cybersecurity professional** based in Sweden.
+A production-style **FastAPI backend** for multi-tenant webhook ingestion, contact/event tracking, message logging, operational metrics, and secure event processing.
 
-My focus is on building practical skills through hands-on projects, labs, automation, and secure backend development. I enjoy working close to the system layer: Linux, networking, Docker, infrastructure automation, backend APIs, and security fundamentals.
-
-I use GitHub as a place to document my learning journey, showcase technical projects, and build a portfolio that reflects my growth in IT, system administration, and cybersecurity.
+This project was built as a practical backend and DevOps portfolio project. It demonstrates how to design a service that can receive external events from automation platforms, CRMs, internal tools, or other systems while keeping tenant data isolated and operationally observable.
 
 ---
 
-## 🚀 Current Focus
+## What This Project Demonstrates
 
-* Linux system administration
-* Networking fundamentals
-* Secure backend development
-* Dockerized applications
-* Infrastructure automation
-* Security-focused project building
-* Practical labs for cybersecurity and system administration
-
----
-
-## 🧠 Certifications
-
-### Completed
-
-| Certification    | Focus Area                                                                |
-| ---------------- | ------------------------------------------------------------------------- |
-| CompTIA A+       | IT fundamentals, hardware, operating systems, troubleshooting             |
-| CompTIA Server+  | Server administration, storage, virtualization, disaster recovery         |
-| CompTIA Network+ | Networking, TCP/IP, DNS, routing, switching, troubleshooting              |
-| CompTIA Linux+   | Linux administration, permissions, services, scripting, system management |
-
-### Planned
-
-| Certification     | Focus Area                                                 |
-| ----------------- | ---------------------------------------------------------- |
-| CompTIA Security+ | Security fundamentals, risk management, IAM, hardening     |
-| CompTIA CySA+     | Blue team, threat detection, security analysis             |
-| CompTIA PenTest+  | Offensive security, vulnerability assessment, exploitation |
-| CompTIA SecAI+    | AI security, secure AI systems, emerging security risks    |
+- Multi-tenant backend design
+- Secure webhook ingestion with HMAC or token-based authentication
+- Idempotent event processing
+- Contact/entity upsert logic
+- Message and event lifecycle tracking
+- Failed event storage and retry workflow
+- PostgreSQL data modeling with SQLAlchemy
+- Alembic database migrations
+- Redis-backed rate limiting and operational support
+- Prometheus metrics endpoint
+- Health, liveness, and readiness checks
+- Dockerized application deployment
+- Production-oriented deployment workflow with rollback logic
 
 ---
 
-## 🛠️ Skills & Tools
+## Tech Stack
 
-### Systems & Infrastructure
-
-![Linux](https://img.shields.io/badge/Linux-System%20Administration-green?style=for-the-badge&logo=linux)
-![Bash](https://img.shields.io/badge/Bash-Scripting-black?style=for-the-badge&logo=gnubash)
-![Docker](https://img.shields.io/badge/Docker-Containers-blue?style=for-the-badge&logo=docker)
-![Terraform](https://img.shields.io/badge/Terraform-Infrastructure%20as%20Code-purple?style=for-the-badge&logo=terraform)
-
-### Networking & Security
-
-![Networking](https://img.shields.io/badge/Networking-TCP%2FIP%20%7C%20DNS%20%7C%20Routing-blue?style=for-the-badge)
-![Cybersecurity](https://img.shields.io/badge/Cybersecurity-Security%20Fundamentals-red?style=for-the-badge)
-![Wireshark](https://img.shields.io/badge/Wireshark-Packet%20Analysis-1679A7?style=for-the-badge&logo=wireshark)
-![Nmap](https://img.shields.io/badge/Nmap-Network%20Scanning-lightgrey?style=for-the-badge)
-
-### Backend & Development
-
-![Python](https://img.shields.io/badge/Python-Backend%20Development-blue?style=for-the-badge&logo=python)
-![FastAPI](https://img.shields.io/badge/FastAPI-API%20Development-009688?style=for-the-badge&logo=fastapi)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database%20Systems-316192?style=for-the-badge&logo=postgresql)
-![CSharp](https://img.shields.io/badge/C%23-.NET%20API%20Development-512BD4?style=for-the-badge&logo=dotnet)
-
-### Cloud & DevOps
-
-![DigitalOcean](https://img.shields.io/badge/DigitalOcean-Cloud%20Hosting-0080FF?style=for-the-badge&logo=digitalocean)
-![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS%20%26%20Security-F38020?style=for-the-badge&logo=cloudflare)
-![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-2088FF?style=for-the-badge&logo=githubactions)
+| Area | Tools |
+|---|---|
+| Backend | FastAPI, Pydantic 2 |
+| Database | PostgreSQL 16, SQLAlchemy 2.0, Alembic |
+| Cache / Rate Limiting | Redis 7 |
+| Infrastructure | Docker, Docker Compose |
+| CI/CD | GitHub Actions, GHCR |
+| Observability | Prometheus metrics, structured logging, Sentry support |
+| Security | HMAC verification, admin token auth, security headers, trusted hosts, CORS controls |
 
 ---
 
-## 📌 Featured Projects
+## Quick Start
 
-### [Multi-Tenant Webhook API](https://github.com/CamiloCod3/Multi-Tenant-Webhook-API)
+```bash
+# Start local development stack
+cd infra
+docker-compose up -d
 
-A production-style **FastAPI backend** for secure multi-tenant webhook ingestion, event tracking, message logging, operational metrics, PostgreSQL/Alembic persistence, Redis support, and Docker-based deployment.
+# Run database migrations
+docker-compose exec api alembic upgrade head
 
-This project was cleaned and published as a portfolio-ready backend system with a fresh public history.
+# Test health endpoint
+curl http://localhost:8000/api/v1/healthz
+```
 
-**Skills demonstrated:**
-
-* FastAPI backend architecture
-* Multi-tenant API design
-* Secure webhook ingestion
-* HMAC and token-based authentication
-* PostgreSQL and Alembic migrations
-* Redis-backed infrastructure support
-* Prometheus-style metrics
-* Docker-based deployment thinking
-* Production-oriented backend structure
+> Note: add a safe `.env` file or use `.env.example` once available. Never commit real secrets.
 
 ---
 
-### [AutoStack](https://github.com/CamiloCod3/AutoStack)
+## API Overview
 
-Automated server deployment project using **Terraform, Docker, Cloudflare, DigitalOcean, Bash, and Linux**.
+| Area | Prefix | Auth | Purpose |
+|---|---|---|---|
+| Health | `/api/v1/healthz`, `/api/v1/livez`, `/api/v1/readyz` | None | Runtime and dependency checks |
+| Tenants | `/api/v1/tenants` | Admin Token | Tenant management and tenant-level stats |
+| Webhooks | `/api/v1/webhooks/lead-event` | HMAC or Token URL | External event ingestion |
+| Contacts | `/api/v1/tenants/{id}/contacts` | Admin Token | Contact/entity search, updates, opt-out handling |
+| Messages | `/api/v1/tenants/{id}/message-logs` | Admin Token | Message lifecycle logging and filtering |
+| Failed Events | `/api/v1/tenants/{id}/failed-events` | Admin Token | Dead-letter queue, retry, cleanup |
+| Metrics | `/api/v1/metrics/overview` | Admin Token | Application KPIs |
+| Prometheus | `/metrics` | Metrics Token | Prometheus scrape endpoint |
 
-This project focuses on infrastructure automation, server provisioning, DNS configuration, Dockerized application deployment, and production-oriented setup practices.
-
-**Skills demonstrated:**
-
-* Infrastructure as Code
-* Terraform automation
-* Docker deployment
-* Linux server configuration
-* Cloudflare DNS
-* Bash scripting
-* Security-focused deployment thinking
-
----
-
-### [Secure Login Admin API](https://github.com/CamiloCod3/Secure-Login-Admin-API)
-
-A backend security learning project built with **FastAPI, PostgreSQL, SQLAlchemy, Pydantic, JWT, OAuth2 concepts, and Docker**.
-
-The goal of this project is to explore secure authentication, admin-controlled user creation, API structure, and backend security best practices.
-
-**Skills demonstrated:**
-
-* Secure API development
-* Authentication and authorization
-* JWT-based login flows
-* PostgreSQL database design
-* Dockerized backend development
-* Python backend architecture
-* Security-minded application design
+Full endpoint documentation with request/response examples: **[API_DOCS.md](API_DOCS.md)**
 
 ---
 
-## 🧪 Lab & Learning Projects
-
-I’m currently building and documenting practical labs around:
-
-* Linux administration
-* Bash scripting
-* Networking fundamentals
-* DNS troubleshooting
-* Docker Compose deployments
-* Basic server hardening
-* API security
-* Vulnerability management
-* Security monitoring concepts
-
-Future lab repositories may include:
+## Architecture
 
 ```text
-linux-network-security-labs/
-├── linux-plus/
-├── network-plus/
-├── security-plus/
-├── bash-scripting/
-├── docker-labs/
-└── security-hardening/
+External Systems / Automation Platforms / CRMs
+        |
+        v  signed webhook event
+   ┌────────────┐     ┌──────────────┐     ┌──────────┐
+   │  FastAPI   │────>│  PostgreSQL  │     │  Redis   │
+   │  Backend   │     │  Database    │     │ Rate Lim │
+   └────────────┘     └──────────────┘     └──────────┘
+        |
+        v
+Webhook Event → Validation → Idempotency Check → Contact/Entity Upsert → Stats → Logs → Metrics
 ```
 
 ---
 
-## 🧭 Career Direction
+## Event Ingestion Flow
 
-My current path is focused on becoming strong in:
+Each webhook event can trigger a structured processing pipeline:
+
+1. Validate authentication and request metadata
+2. Store the event idempotently
+3. Normalize event type aliases
+4. Upsert the related contact/entity record
+5. Update status progression without moving backward
+6. Update campaign/workflow-style aggregate stats where applicable
+7. Create message lifecycle logs for relevant events
+8. Handle opt-out events
+9. Store failed events for later retry
+
+This makes the project useful as a generic foundation for CRM integrations, automation workflows, messaging systems, or event-driven backend services.
+
+---
+
+## Multi-Tenancy
+
+The application uses row-based tenant isolation through `tenant_id` across tenant-owned tables. Each tenant can receive a unique webhook URL for event ingestion. Tenant deletion cascades through related data to keep cleanup predictable.
+
+---
+
+## Security Features
+
+- HMAC-SHA256 webhook verification
+- Token-based webhook fallback for tenant-specific URLs
+- Admin token protection for management endpoints
+- Metrics token protection for Prometheus scraping
+- Production secret validation
+- Trusted host configuration
+- CORS configuration
+- Request correlation IDs
+- Security headers including CSP, HSTS, frame protection, no-sniff, and no-store caching
+- Rate limiting support
+
+---
+
+## Project Structure
 
 ```text
-Linux → Networking → Security → Blue Team → Offensive Security → AI Security
+backend/
+  app/
+    core/        # Config, DB, logging, security, rate limiting, audit helpers
+    models/      # SQLAlchemy models
+    routers/     # API endpoints
+    schemas/     # Pydantic validation models
+    services/    # Event ingestion and business logic
+  alembic/       # Database migrations
+infra/
+  docker-compose.prod.yml
+  deploy_prod.sh
 ```
 
-I’m building a strong foundation in system administration first, then moving deeper into cybersecurity with a practical, hands-on approach.
+---
 
-My long-term goal is to work with cybersecurity, cloud security, secure infrastructure, and automation.
+## Deployment Notes
+
+The repository includes a production-oriented deployment setup using Docker images, GitHub Actions, GHCR, and a remote Linux server.
+
+The deployment script demonstrates:
+
+- environment validation
+- GHCR login
+- Docker image pull
+- Redis service startup
+- Alembic migrations before container replacement
+- health checks after deployment
+- automatic rollback to the last successful image tag
+- Docker image cleanup
+
+For a public portfolio version, production deployment should be treated as an example workflow and adapted to your own environment.
 
 ---
 
-## 📈 GitHub Goals
+## Migrations
 
-I use GitHub to:
+```bash
+# Show current migration version
+docker-compose exec api alembic current
 
-* Document my technical growth
-* Build real-world projects
-* Practice clean project structure
-* Showcase hands-on labs
-* Improve my backend, Linux, DevOps, and security skills
-* Create a portfolio that reflects my certification and career path
+# Apply pending migrations
+docker-compose exec api alembic upgrade head
 
----
-
-## 🌍 About Me
-
-* Based in Sweden 🇸🇪
-* Interested in Linux, cybersecurity, automation, backend development, and cloud infrastructure
-* I enjoy building practical projects that connect theory with real-world IT skills
-* Always learning, always improving
+# Roll back one migration
+docker-compose exec api alembic downgrade -1
+```
 
 ---
 
-## 📫 Connect
+## What I Learned
 
-You can find my projects here on GitHub as I continue building, documenting, and improving my skills.
+This project helped me practice real-world backend and infrastructure concepts, including:
 
-Thanks for visiting my profile 👋
+- designing tenant-aware APIs
+- handling external webhooks securely
+- structuring FastAPI applications with routers, services, schemas, and models
+- working with PostgreSQL migrations
+- using Redis in backend infrastructure
+- building Docker-based deployment flows
+- thinking about production readiness, observability, and rollback safety
+
+---
+
+## Future Improvements
+
+- Add automated test coverage for core flows
+- Replace simple admin token auth with RBAC/JWT-based administration
+- Add OpenTelemetry tracing
+- Add background workers for async event processing
+- Add local development Docker Compose file if separate from production
+- Add Kubernetes or Docker Swarm deployment example
+- Improve API examples and demo seed data
+
+---
+
+## License
+
+Apache License 2.0
