@@ -1,0 +1,17 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.12.5
+pydantic-settings==2.4.0
+SQLAlchemy==2.0.36
+psycopg[binary]==3.2.1
+python-jose==3.4.0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-multipart==0.0.26
+email-validator==2.2.0
+alembic==1.13.2
+slowapi==0.1.9
+sentry-sdk==2.11.0
+starlette-exporter==0.23.0
+redis==5.0.8
+httpx==0.28.1
