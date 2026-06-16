@@ -1,7 +1,7 @@
 """add unique inbound provider message log index
 
 Revision ID: 0013
-Revises: 0012_feedback_system
+Revises: 0011_add_tenant_dashboard_token
 Create Date: 2026-05-24
 """
 
@@ -10,7 +10,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = "0013"
-down_revision = "0012_feedback_system"
+down_revision = "0011_add_tenant_dashboard_token"
 branch_labels = None
 depends_on = None
 
